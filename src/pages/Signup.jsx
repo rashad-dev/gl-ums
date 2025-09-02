@@ -1,17 +1,40 @@
 // src/pages/Signup.jsx
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "../components/ui/form/Input";
 import Button from "../components/ui/Button";
 import signupImg from "../assets/sign-up/signup.png";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+
+export const signupSchema = Yup.object().shape({
+  name: Yup.string().required("Name is required"),
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  password: Yup.string()
+    .min(6, "Password must be at least 6 characters")
+    .required("Password is required"),
+  phone: Yup.string()
+    .matches(/^[0-9]{10}$/, "Mobile must be 10 digits")
+    .required("Mobile is required"),
+  date: Yup.date().required("Date of Birth is required"),
+});
 
 const Signup = () => {
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(signupSchema),
+    mode: "onBlur",
+  });
 
   const onSubmit = (data) => {
-    console.log("Signup Data:", data);
+    console.log("Signup Data:", errors);
   };
-
+  useEffect(() => {
+    console.log(errors);
+  }, [errors]);
   return (
     <div className="flex  justify-center min-h-screen bg-gray-100">
       <div className="w-full  md:w-full  md:p-0 md:flex">
@@ -37,6 +60,7 @@ const Signup = () => {
             type={"text"}
             placeholder={"Enter your name"}
             {...register("name")}
+             error={errors.name?.message} 
           />
 
           {/* Email */}
@@ -45,6 +69,8 @@ const Signup = () => {
             type={"email"}
             placeholder={"Enter your email"}
             {...register("email")}
+             error={errors.email?.message} 
+
           />
 
           {/* Date */}
@@ -53,6 +79,8 @@ const Signup = () => {
             type={"date"}
             placeholder={"D/M/YYY"}
             {...register("date")}
+             error={errors.date?.message} 
+
           />
 
           {/* Phone */}
@@ -61,6 +89,8 @@ const Signup = () => {
             type={"text"}
             placeholder={"Enter your phone"}
             {...register("phone")}
+             error={errors.phone?.message} 
+
           />
 
           {/* Password */}
@@ -69,6 +99,8 @@ const Signup = () => {
             type={"password"}
             placeholder={"Enter your password"}
             {...register("password")}
+             error={errors.password?.message} 
+
           />
 
           <Button>Signup</Button>
