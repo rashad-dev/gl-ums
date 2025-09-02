@@ -2,8 +2,11 @@
 
 @theme {
    --font-primary: "Poppins", "sans-serif";;
-  --breakpoint-3xl: 120rem;
   --color-primary: #3A4980;
+  --color-baseWhite: #FFFf;
+  --color-baseBlack: #000;
+  --color-baseGray: #9E9E9E;
+  
 
 }
 
