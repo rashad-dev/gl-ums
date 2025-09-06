@@ -1,10 +1,10 @@
 import { Route, Routes } from "react-router-dom";
 
 import AppLayout from "../src/components/layout/AppLayout";
-import { Products } from "../src/pages/Products";
-import { Login } from "../src/pages/Login";
+import  Products  from "../src/pages/Products";
+import  Login  from "../src/pages/Login";
 import Signup from "../src/pages/Signup";
-import { Profile } from "../src/pages/Profile";
+import  Profile  from "../src/pages/Profile";
 
 const Router = () => {
   return (
