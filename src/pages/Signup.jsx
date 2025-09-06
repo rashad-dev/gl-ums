@@ -6,6 +6,7 @@ import Button from "../components/ui/Button";
 import signupImg from "../assets/sign-up/signup.png";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
+import { addUser } from "../services/userServices";
 
  const signupSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -31,6 +32,9 @@ const Signup = () => {
 
   const onSubmit = (data) => {
     console.log("Signup Data:", errors);
+    const newUser = { ...data };
+
+    addUser(newUser)
   };
   useEffect(() => {
     console.log(errors);

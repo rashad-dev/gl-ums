@@ -2,7 +2,7 @@ import React from "react";
 
 export const Input = ({ type, label, labelClass, inputClass,error, ...props }) => {
  
-    console.log("error",error);
+    
     
   return (
     <div className="mb-4">
