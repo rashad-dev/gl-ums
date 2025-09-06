@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { getAuth, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import Loader from "../components/ui/Loader";
+import { FaUserCircle, FaPhoneAlt, FaBirthdayCake, FaEnvelope } from "react-icons/fa";
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -8,14 +10,11 @@ const Profile = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Get Firebase user
     const firebaseUser = auth.currentUser;
 
     if (firebaseUser) {
-      // Get localUser from localStorage
       const localUser = JSON.parse(localStorage.getItem("user"));
 
-      // Convert Firestore timestamp to readable date
       const dob = localUser?.date
         ? new Date(localUser.date.seconds * 1000).toLocaleDateString()
         : "";
@@ -27,7 +26,6 @@ const Profile = () => {
         dob: dob,
       });
     } else {
-      // Not logged in → redirect
       navigate("/login");
     }
   }, [auth, navigate]);
@@ -42,40 +40,41 @@ const Profile = () => {
     }
   };
 
-  if (!user) return <p className="text-center mt-10">Loading profile...</p>;
+  if (!user) return <Loader />;
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-6 md:p-8">
-        <h2 className="text-2xl font-bold text-center mb-6">User Profile</h2>
-
-        {/* User details */}
-        <div className="space-y-4">
-          <div>
-            <p className="text-gray-500 text-sm">Name</p>
-            <p className="font-medium">{user.name}</p>
-          </div>
-          <div>
-            <p className="text-gray-500 text-sm">Email</p>
-            <p className="font-medium">{user.email}</p>
-          </div>
-          <div>
-            <p className="text-gray-500 text-sm">Mobile</p>
-            <p className="font-medium">{user.mobile}</p>
-          </div>
-          <div>
-            <p className="text-gray-500 text-sm">Date of Birth</p>
-            <p className="font-medium">{user.dob}</p>
-          </div>
+    <div className="min-h-screen flex justify-center items-center bg-gradient-to-r from-purple-100 via-purple-50 to-white p-4">
+      <div className="w-full max-w-xl bg-white rounded-3xl shadow-xl overflow-hidden">
+        {/* Profile Header */}
+        <div className="bg-purple-600 p-6 flex flex-col items-center text-white">
+          <FaUserCircle className="text-7xl mb-4" />
+          <h1 className="text-2xl font-bold">{user.name}</h1>
+          <p className="text-purple-200 mt-1">{user.email}</p>
         </div>
 
-        {/* Logout button */}
-        <button
-          onClick={handleLogout}
-          className="w-full mt-6 bg-red-500 text-white py-2 px-4 rounded-xl hover:bg-red-600 transition"
-        >
-          Logout
-        </button>
+        {/* Profile Info */}
+        <div className="p-6 space-y-4">
+          <div className="flex items-center gap-4">
+            <FaPhoneAlt className="text-purple-600 w-5 h-5" />
+            <span className="text-gray-700 font-medium">{user.mobile || "Not provided"}</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <FaBirthdayCake className="text-purple-600 w-5 h-5" />
+            <span className="text-gray-700 font-medium">{user.dob || "Not provided"}</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <FaEnvelope className="text-purple-600 w-5 h-5" />
+            <span className="text-gray-700 font-medium">{user.email}</span>
+          </div>
+
+          {/* Logout */}
+          <button
+            onClick={handleLogout}
+            className="w-full mt-6 bg-red-500 hover:bg-red-600 text-white py-3 rounded-2xl font-semibold transition"
+          >
+            Logout
+          </button>
+        </div>
       </div>
     </div>
   );

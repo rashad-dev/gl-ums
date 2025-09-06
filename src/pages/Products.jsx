@@ -3,11 +3,13 @@ import Instance from "../api/axios"; // your axios instance
 import Button from "../components/ui/Button";
 import productBanner from "../assets/products/product.png";
 import { Star } from "../components/ui/Star";
+import Loader from "../components/ui/Loader";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [category, setCategory] = useState("all");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchProducts();
@@ -27,6 +29,8 @@ const Products = () => {
       console.log(res.data);
     } catch (err) {
       console.error("Error fetching products:", err);
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -34,11 +38,14 @@ const Products = () => {
     if (category === "all") {
       setFilteredProducts(products);
     } else {
-      setFilteredProducts(
-        products.filter((p) => p.category === category)
-      );
+      setFilteredProducts(products.filter((p) => p.category === category));
     }
   };
+
+  if (loading) {
+   return <Loader />;
+
+  }
 
   return (
     filteredProducts.length > 0 && (

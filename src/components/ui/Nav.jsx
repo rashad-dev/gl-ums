@@ -8,10 +8,10 @@ export const Nav = () => {
   const navigate=useNavigate();
 
   const links = [
-    { name: "Category", path: "#" },
-    { name: "Brand", path: "#" },
-    { name: "Contact", path: "#" },
-    { name: "FAQ's", path: "#" },
+    { name: "Category", path: "category" },
+    { name: "Brand", path: "brand" },
+    { name: "Contact", path: "contact" },
+    { name: "FAQ's", path: "faqs" },
   ];
 
   return (

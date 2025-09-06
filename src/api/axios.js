@@ -1,31 +1,49 @@
 import axios from "axios";
 
 const Instance = axios.create({
-  baseURL: "https://fakestoreapi.com", 
+  baseURL: "https://fakestoreapi.com",
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// Optional: Request interceptor
+// Add retry config
+const MAX_RETRIES = 3;
+
+// Request interceptor
 Instance.interceptors.request.use(
   (config) => {
-    // you can log requests or attach auth token from localStorage
     const user = JSON.parse(localStorage.getItem("user"));
     if (user?.token) {
       config.headers.Authorization = `Bearer ${user.token}`;
     }
+    // Initialize retry count
+    config.__retryCount = config.__retryCount || 0;
     return config;
   },
   (error) => Promise.reject(error)
 );
 
-// Optional: Response interceptor
+// Response interceptor with retry
 Instance.interceptors.response.use(
   (response) => response,
-  (error) => {
-    console.error("API error:", error);
-    return Promise.reject(error);
+  async (error) => {
+    const config = error.config;
+    if (!config || config.__retryCount >= MAX_RETRIES) {
+      // Max retries reached or no config, reject
+      return Promise.reject(error);
+    }
+
+    // Increment retry count
+    config.__retryCount += 1;
+
+    console.log(`Retrying request... Attempt ${config.__retryCount}`);
+
+    // Optional: Wait a bit before retrying
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // Retry the request
+    return Instance(config);
   }
 );
 
