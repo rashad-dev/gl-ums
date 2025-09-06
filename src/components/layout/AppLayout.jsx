@@ -11,7 +11,7 @@ const AppLayout = () => {
       <div className="w-full mt-16 flex-1 pb-14">
         <Outlet />
       </div>
-      <footer>footer</footer>
+      <footer className="bg-[#f0e5f8] w-full h-36 md:h-56 flex items-center justify-center text-5xl md:text-7xl font-bold">Footer</footer>
     </div>
   );
 };
