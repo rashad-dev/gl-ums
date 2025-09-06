@@ -8,21 +8,26 @@ const Profile = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // First check Firebase Auth
+    // Get Firebase user
     const firebaseUser = auth.currentUser;
-    console.log("Firebase User:", firebaseUser);
-    
+
     if (firebaseUser) {
-      // If user is available from Firebase
+      // Get localUser from localStorage
       const localUser = JSON.parse(localStorage.getItem("user"));
+
+      // Convert Firestore timestamp to readable date
+      const dob = localUser?.date
+        ? new Date(localUser.date.seconds * 1000).toLocaleDateString()
+        : "";
+
       setUser({
-        name: localUser?.name || firebaseUser.displayName || "N/A",
+        name: localUser?.name || firebaseUser.displayName,
         email: firebaseUser.email,
-        mobile: localUser?.mobile || "N/A",
-        dob: localUser?.dob || "N/A",
+        mobile: localUser?.phone || "",
+        dob: dob,
       });
     } else {
-      // If not logged in → redirect
+      // Not logged in → redirect
       navigate("/login");
     }
   }, [auth, navigate]);
