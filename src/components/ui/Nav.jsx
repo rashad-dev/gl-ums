@@ -20,7 +20,7 @@ export const Nav = () => {
         <div className="flex justify-between items-center h-16 ">
           {/* Logo */}
           <div className="flex items-center space-x-8">
-            <h1 className="text-3xl font-bold text-primary italic " onClick={()=>{navigate("/")}}>
+            <h1 className="text-3xl font-bold text-primary italic cursor-pointer " onClick={()=>{navigate("/")}}>
               FashionHub
             </h1>
             <div className="hidden md:flex space-x-4">
