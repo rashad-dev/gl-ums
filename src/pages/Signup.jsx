@@ -9,6 +9,7 @@ import * as Yup from "yup";
 import { toast } from "react-toastify";
 
 import { addUser } from "../services/userServices";
+import { useNavigate } from "react-router-dom";
 
 const signupSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -23,6 +24,7 @@ const signupSchema = Yup.object().shape({
 });
 
 const Signup = () => {
+  const navigate = useNavigate();
   const {
     register,
     reset,
@@ -122,7 +124,7 @@ const Signup = () => {
           <Button>Signup</Button>
           <p className="text-[14px] text-center text-baseGray">
             Do you have an account?{" "}
-            <span className="text-baseBlack cursor-pointer">Sign in</span>
+            <span className="text-baseBlack cursor-pointer" onClick={()=>{navigate("/login")}}>Sign in</span>
           </p>
         </form>
       </div>
