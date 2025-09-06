@@ -6,10 +6,16 @@ import { Star } from "../components/ui/Star";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [category, setCategory] = useState("all");
 
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  useEffect(() => {
+    applyFilter();
+  }, [category, products]);
 
   const fetchProducts = async () => {
     console.log("Fetching products...");
@@ -17,14 +23,25 @@ const Products = () => {
     try {
       const res = await Instance.get("/products");
       setProducts(res.data);
+      setFilteredProducts(res.data);
       console.log(res.data);
     } catch (err) {
       console.error("Error fetching products:", err);
     }
   };
 
+  const applyFilter = () => {
+    if (category === "all") {
+      setFilteredProducts(products);
+    } else {
+      setFilteredProducts(
+        products.filter((p) => p.category === category)
+      );
+    }
+  };
+
   return (
-    products.length > 0 && (
+    filteredProducts.length > 0 && (
       <div className="px-4 md:px-16 py-8 bg-gray-50 min-h-screen">
         {/* Banner */}
         <div className="bg-[#f0e5f8] rounded-xl flex flex-col md:flex-row items-center justify-between p-6 md:px-20 mb-8">
@@ -32,7 +49,7 @@ const Products = () => {
             <h2 className="text-2xl md:text-3xl font-bold">
               Grab Upto 50% Off On <br /> Selected Headphone
             </h2>
-            <Button className="mt-4 md:w-1/2  bg-primary">Buy Now</Button>
+            <Button className="mt-4 md:w-1/2 bg-primary">Buy Now</Button>
           </div>
           <img
             src={productBanner}
@@ -41,12 +58,27 @@ const Products = () => {
           />
         </div>
 
+        {/* Category Filter */}
+        <div className="mb-6">
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="border p-2 rounded"
+          >
+            <option value="all">All Categories</option>
+            <option value="electronics">Electronics</option>
+            <option value="jewelery">Jewelery</option>
+            <option value="men's clothing">Men's Clothing</option>
+            <option value="women's clothing">Women's Clothing</option>
+          </select>
+        </div>
+
         {/* Products Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {products.map((product) => (
+          {filteredProducts.map((product) => (
             <div
               key={product.id}
-              className="bg-[#f7f5f7]  rounded-xl shadow-md p-6 relative hover:shadow-lg transition-shadow duration-200"
+              className="bg-[#f7f5f7] rounded-xl shadow-md p-6 relative hover:shadow-lg transition-shadow duration-200"
             >
               {/* Heart Icon */}
               <div className="absolute top-2 right-2 cursor-pointer bg-white w-10 h-10 flex items-center justify-center rounded-full text-gray-400 hover:text-red-500">
@@ -61,14 +93,14 @@ const Products = () => {
               />
 
               <div className="flex justify-between">
-                <div className="flex flex-col  gap-3">
+                <div className="flex flex-col gap-3">
                   {/* Product Info */}
-                  <h3 className=" mb-1 truncate text-baseGray md:text-xl">
+                  <h3 className="mb-1 truncate text-baseGray md:text-xl">
                     {product.title.length > 10
                       ? product.title.slice(0, 10) + ".."
                       : product.title}
                   </h3>
-                  <p className="text-gray-500/50  mb-2  text-xl">
+                  <p className="text-gray-500/50 mb-2 text-xl">
                     {product.category}
                   </p>
                   <div className="flex items-center mb-2">
@@ -80,7 +112,7 @@ const Products = () => {
                 </div>
 
                 {/* Price */}
-                <div className="text-xl font-bold text-baseBlack mb-4  md:text-xl lg:text-2xl">
+                <div className="text-xl font-bold text-baseBlack mb-4 md:text-xl lg:text-2xl">
                   $ {product.price.toFixed(0)}
                 </div>
               </div>
