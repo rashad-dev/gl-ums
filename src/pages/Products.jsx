@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Instance from "../api/axios"; // your axios instance
 import Button from "../components/ui/Button";
-import productBanner from "../assets/products/product.png";
+import productBanner from "../assets/products/product.webp";
 import { Star } from "../components/ui/Star";
 import Loader from "../components/ui/Loader";
 

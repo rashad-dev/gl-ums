@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "../components/ui/form/Input";
 import Button from "../components/ui/Button";
-import signupImg from "../assets/sign-up/signup.png";
+import signupImg from "../assets/sign-up/signup.webp";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { toast } from "react-toastify";

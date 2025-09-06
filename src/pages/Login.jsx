@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "../components/ui/form/Input";
 import Button from "../components/ui/Button";
-import signupImg from "../assets/login/login.png";
+import signupImg from "../assets/login/login.webp";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { loginWithFirebase } from "../services/userServices"; // new firebase login
