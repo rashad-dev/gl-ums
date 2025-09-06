@@ -1,11 +1,12 @@
 // src/components/Navbar.jsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FiMenu, FiX, FiShoppingBag } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
 export const Nav = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate=useNavigate();
+  const [userName, setUserName] = useState("User");
 
   const links = [
     { name: "Category", path: "category" },
@@ -13,6 +14,13 @@ export const Nav = () => {
     { name: "Contact", path: "contact" },
     { name: "FAQ's", path: "faqs" },
   ];
+
+    useEffect(() => {
+    const localUser = JSON.parse(localStorage.getItem("user"));
+    if (localUser?.name) {
+      setUserName(localUser.name);
+    }
+  }, []);
 
   return (
     <nav className="w-full bg-white border-b- border-baseGray shadow-sm">
@@ -55,7 +63,7 @@ export const Nav = () => {
               />
               <div className="hidden sm:block text-sm">
                 <p className="text-gray-500">Good Morning!</p>
-                <p className="font-semibold text-primary">Scarlet Johnson</p>
+                <p className="font-semibold text-primary">{userName || "User"}</p>
               </div>
             </div>
 
