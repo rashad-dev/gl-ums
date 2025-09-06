@@ -6,7 +6,6 @@ export const addUser = async (user) => {
   const { email } = user;
 
   try {
- 
     const q = query(collection(db, "users"), where("email", "==", email));
     const snapshot = await getDocs(q);
 
@@ -21,7 +20,7 @@ export const addUser = async (user) => {
       ...user,
       createdAt: new Date(),
     });
-
+    toast.success("User added successfully");
     console.log("User added!");
     return { success: true };
   } catch (err) {

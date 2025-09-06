@@ -8,7 +8,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { addUser } from "../services/userServices";
 
- const signupSchema = Yup.object().shape({
+const signupSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
   password: Yup.string()
@@ -23,6 +23,7 @@ import { addUser } from "../services/userServices";
 const Signup = () => {
   const {
     register,
+    reset,
     handleSubmit,
     formState: { errors },
   } = useForm({
@@ -31,10 +32,16 @@ const Signup = () => {
   });
 
   const onSubmit = (data) => {
-    console.log("Signup Data:", errors);
-    const newUser = { ...data };
+    try {
+      console.log("Signup Data:", errors);
+      const newUser = { ...data };
 
-    addUser(newUser)
+      const response = addUser(newUser);
+
+      reset();
+    } catch (error) {
+      console.error("Error during signup:", error);
+    }
   };
   useEffect(() => {
     console.log(errors);
@@ -64,7 +71,7 @@ const Signup = () => {
             type={"text"}
             placeholder={"Enter your name"}
             {...register("name")}
-             error={errors.name?.message} 
+            error={errors.name?.message}
           />
 
           {/* Email */}
@@ -73,8 +80,7 @@ const Signup = () => {
             type={"email"}
             placeholder={"Enter your email"}
             {...register("email")}
-             error={errors.email?.message} 
-
+            error={errors.email?.message}
           />
 
           {/* Date */}
@@ -83,8 +89,7 @@ const Signup = () => {
             type={"date"}
             placeholder={"D/M/YYY"}
             {...register("date")}
-             error={errors.date?.message} 
-
+            error={errors.date?.message}
           />
 
           {/* Phone */}
@@ -93,8 +98,7 @@ const Signup = () => {
             type={"text"}
             placeholder={"Enter your phone"}
             {...register("phone")}
-             error={errors.phone?.message} 
-
+            error={errors.phone?.message}
           />
 
           {/* Password */}
@@ -103,8 +107,7 @@ const Signup = () => {
             type={"password"}
             placeholder={"Enter your password"}
             {...register("password")}
-             error={errors.password?.message} 
-
+            error={errors.password?.message}
           />
 
           <Button>Signup</Button>
