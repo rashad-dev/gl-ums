@@ -3,20 +3,15 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "../components/ui/form/Input";
 import Button from "../components/ui/Button";
-import signupImg from "../assets/sign-up/signup.png";
+import signupImg from "../assets/login/login.png";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 
- const signupSchema = Yup.object().shape({
-  name: Yup.string().required("Name is required"),
+const loginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),
   password: Yup.string()
     .min(6, "Password must be at least 6 characters")
     .required("Password is required"),
-  phone: Yup.string()
-    .matches(/^[0-9]{10}$/, "Mobile must be 10 digits")
-    .required("Mobile is required"),
-  date: Yup.date().required("Date of Birth is required"),
 });
 
 const Login = () => {
@@ -25,7 +20,7 @@ const Login = () => {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(signupSchema),
+    resolver: yupResolver(loginSchema),
     mode: "onBlur",
   });
 
@@ -39,29 +34,21 @@ const Login = () => {
     <div className="flex  justify-center min-h-screen bg-gray-100">
       <div className="w-full  md:w-full  md:p-0 md:flex">
         <img
-          className="hidden md:block w-[60%] h-screen object-cover object-[50%_80%] "
+          className="hidden md:block w-[60%] h-screen object-cover object-top "
           src={signupImg}
           alt=""
         />
 
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="space-y-4 md:w-[40%] p-6 sm:10 lg:p-16"
+          className="space-y-4 md:w-[40%] p-6 sm:10 lg:p-16 md:flex md:flex-col md:justify-center md:space-y-6 "
         >
           <h1 className="text-[24px] font-bold md:text-center">
-            Create an Account
+            Welcome Back!
           </h1>
           <p className="text-[14px] md:text-center text-baseGray">
-            Are you ready to join us! Let’s create Account
+            Please login to your account
           </p>
-          {/* Name */}
-          <Input
-            label={"Name"}
-            type={"text"}
-            placeholder={"Enter your name"}
-            {...register("name")}
-             error={errors.name?.message} 
-          />
 
           {/* Email */}
           <Input
@@ -69,28 +56,7 @@ const Login = () => {
             type={"email"}
             placeholder={"Enter your email"}
             {...register("email")}
-             error={errors.email?.message} 
-
-          />
-
-          {/* Date */}
-          <Input
-            label={"Date Field"}
-            type={"date"}
-            placeholder={"D/M/YYY"}
-            {...register("date")}
-             error={errors.date?.message} 
-
-          />
-
-          {/* Phone */}
-          <Input
-            label={"Phone"}
-            type={"text"}
-            placeholder={"Enter your phone"}
-            {...register("phone")}
-             error={errors.phone?.message} 
-
+            error={errors.email?.message}
           />
 
           {/* Password */}
@@ -99,11 +65,12 @@ const Login = () => {
             type={"password"}
             placeholder={"Enter your password"}
             {...register("password")}
-             error={errors.password?.message} 
-
+            error={errors.password?.message}
           />
 
-          <Button>Signup</Button>
+          <Button className={"text-baseWhite "} color="baseBlack">
+            Signup
+          </Button>
           <p className="text-[14px] text-center text-baseGray">
             Do you have an account?{" "}
             <span className="text-baseBlack cursor-pointer">Sign in</span>

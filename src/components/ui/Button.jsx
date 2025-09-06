@@ -1,5 +1,5 @@
 function Button({
-  color = "primary",
+color = "primary",
   text = "baseWhite",
   children,
   className,
