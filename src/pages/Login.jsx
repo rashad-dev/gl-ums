@@ -1,12 +1,12 @@
-// src/pages/Signup.jsx
-import React, { useContext, useEffect } from "react";
+// src/pages/Login.jsx
+import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "../components/ui/form/Input";
 import Button from "../components/ui/Button";
 import signupImg from "../assets/login/login.png";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import { loginUser } from "../services/userServices";
+import { loginWithFirebase } from "../services/userServices"; // new firebase login
 import { AuthContext } from "../store/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
@@ -20,6 +20,7 @@ const loginSchema = Yup.object().shape({
 const Login = () => {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -31,32 +32,28 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     try {
-      console.log("Login Data:", data);
-      const res = await loginUser(data.email, data.password);
-
+      const res = await loginWithFirebase(data.email, data.password);
       if (res.success) {
         login(res.user);
         navigate("/");
       }
-    } catch (error) {
-      console.error("Error during login:", error);
+    } catch (err) {
+      console.error("Login error:", err);
     }
   };
-  useEffect(() => {
-    console.log(errors);
-  }, [errors]);
+
   return (
-    <div className="flex  justify-center min-h-screen bg-gray-100">
-      <div className="w-full  md:w-full  md:p-0 md:flex">
+    <div className="flex justify-center min-h-screen bg-gray-100">
+      <div className="w-full md:w-full md:p-0 md:flex">
         <img
-          className="hidden md:block w-[60%] h-screen object-cover object-top "
+          className="hidden md:block w-[60%] h-screen object-cover object-top"
           src={signupImg}
           alt=""
         />
 
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="space-y-4 md:w-[40%] p-6 sm:10 lg:p-16 md:flex md:flex-col md:justify-center md:space-y-6 "
+          className="space-y-4 md:w-[40%] p-6 sm:10 lg:p-16 md:flex md:flex-col md:justify-center md:space-y-6"
         >
           <h1 className="text-[24px] font-bold md:text-center">
             Welcome Back!
@@ -67,28 +64,28 @@ const Login = () => {
 
           {/* Email */}
           <Input
-            label={"Email"}
-            type={"email"}
-            placeholder={"Enter your email"}
+            label="Email"
+            type="email"
+            placeholder="Enter your email"
             {...register("email")}
             error={errors.email?.message}
           />
 
           {/* Password */}
           <Input
-            label={"Password"}
-            type={"password"}
-            placeholder={"Enter your password"}
+            label="Password"
+            type="password"
+            placeholder="Enter your password"
             {...register("password")}
             error={errors.password?.message}
           />
 
-          <Button className={"text-baseWhite "} color="baseBlack">
-            Signup
+          <Button className="" color="secondary">
+            Login
           </Button>
           <p className="text-[14px] text-center text-baseGray">
-            Do you have an account?{" "}
-            <span className="text-baseBlack cursor-pointer">Sign in</span>
+            Don’t have an account?{" "}
+            <span className="text-baseBlack cursor-pointer" onClick={() => navigate("/signup")}>Sign up</span>
           </p>
         </form>
       </div>

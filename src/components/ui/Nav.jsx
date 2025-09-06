@@ -1,9 +1,11 @@
 // src/components/Navbar.jsx
 import React, { useState } from "react";
 import { FiMenu, FiX, FiShoppingBag } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
 export const Nav = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate=useNavigate();
 
   const links = [
     { name: "Category", path: "#" },
@@ -45,7 +47,7 @@ export const Nav = () => {
             </div>
 
             {/* Profile */}
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 cursor-pointer" onClick={()=>{navigate("/profile")}}>
               <img
                 src="https://randomuser.me/api/portraits/women/44.jpg"
                 alt="profile"

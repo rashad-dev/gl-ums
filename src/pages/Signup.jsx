@@ -6,6 +6,8 @@ import Button from "../components/ui/Button";
 import signupImg from "../assets/sign-up/signup.png";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
+import { toast } from "react-toastify";
+
 import { addUser } from "../services/userServices";
 
 const signupSchema = Yup.object().shape({
@@ -31,26 +33,32 @@ const Signup = () => {
     mode: "onBlur",
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     try {
-      console.log("Signup Data:", errors);
-      const newUser = { ...data };
+      console.log("Signup Data:", data);
+      const response = await addUser(data);
 
-      const response = addUser(newUser);
-
-      reset();
+      if (response.success) {
+        toast.success("User registered successfully!");
+        reset();
+      } else {
+        toast.error(response.error?.message || "Signup failed");
+      }
     } catch (error) {
       console.error("Error during signup:", error);
+      toast.error("Something went wrong!");
     }
   };
+
   useEffect(() => {
     console.log(errors);
   }, [errors]);
+
   return (
-    <div className="flex  justify-center min-h-screen bg-gray-100">
-      <div className="w-full  md:w-full  md:p-0 md:flex">
+    <div className="flex justify-center min-h-screen bg-gray-100">
+      <div className="w-full md:w-full md:p-0 md:flex">
         <img
-          className="hidden md:block w-[60%] h-screen object-cover object-[50%_80%] "
+          className="hidden md:block w-[60%] h-screen object-cover object-[50%_80%]"
           src={signupImg}
           alt=""
         />
@@ -65,6 +73,7 @@ const Signup = () => {
           <p className="text-[14px] md:text-center text-baseGray">
             Are you ready to join us! Let’s create Account
           </p>
+
           {/* Name */}
           <Input
             label={"Name"}

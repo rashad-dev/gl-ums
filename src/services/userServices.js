@@ -1,27 +1,48 @@
-import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  query,
+  where,
+  getDocs,
+  doc,
+  getDoc,
+} from "firebase/firestore";
 import { db } from "../firebase/config";
 import { toast } from "react-toastify";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase/config";
+
+// src/services/userServices.js
+
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { setDoc } from "firebase/firestore";
 
 export const addUser = async (user) => {
-  const { email } = user;
+  const { email, password, ...rest } = user;
 
   try {
-    const q = query(collection(db, "users"), where("email", "==", email));
-    const snapshot = await getDocs(q);
-
-    if (!snapshot.empty) {
-      console.error("User with this email already exists.");
-      toast.error("User with this email already exists.");
-      return { success: false, message: "Email already exists" };
+    // Check if email already exists in Firestore (optional, Firebase Auth already prevents duplicates)
+    const q = doc(db, "users", email);
+    const snapshot = await getDoc(q);
+    if (snapshot.exists()) {
+      return { success: false, error: { message: "Email already exists" } };
     }
 
-    // Add new user
-    await addDoc(collection(db, "users"), {
-      ...user,
+    // Create Firebase Auth user
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    const uid = userCredential.user.uid;
+
+    // Save user data in Firestore with UID as document ID
+    await setDoc(doc(db, "users", uid), {
+      ...rest,
+      email,
       createdAt: new Date(),
     });
-    toast.success("User added successfully");
-    console.log("User added!");
+
     return { success: true };
   } catch (err) {
     console.error("Error adding user:", err);
@@ -29,35 +50,23 @@ export const addUser = async (user) => {
   }
 };
 
-
-
-
-export const loginUser = async (email, password) => {
+export const loginWithFirebase = async (email, password) => {
   try {
-    // Query users collection for the email
-    const q = query(collection(db, "users"), where("email", "==", email));
-    const snapshot = await getDocs(q);
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    const user = userCredential.user;
 
-    if (snapshot.empty) {
-      toast.error("User not found");
-      return { success: false, message: "User not found" };
-    }
-
-    // Get the user data (Firestore can have multiple, take first)
-    const userDoc = snapshot.docs[0];
+    // Fetch additional user data from Firestore if needed
+    const userDoc = await getDoc(doc(db, "users", user.uid));
     const userData = userDoc.data();
-
-    // Check password
-    if (userData.password !== password) {
-      toast.error("Incorrect password");
-      return { success: false, message: "Incorrect password" };
-    }
-
-    toast.success("Login successful");
-    return { success: true, user: userData };
+    toast.success("Login successful!");
+    return { success: true, user: { uid: user.uid, ...userData } };
   } catch (err) {
-    console.error("Error logging in:", err);
-    toast.error("Login failed");
+    console.error("Login failed:", err);
+    toast.error("Login failed: " + err.message);
     return { success: false, error: err };
   }
 };
