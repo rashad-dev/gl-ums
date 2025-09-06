@@ -1,11 +1,14 @@
 // src/pages/Signup.jsx
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "../components/ui/form/Input";
 import Button from "../components/ui/Button";
 import signupImg from "../assets/login/login.png";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
+import { loginUser } from "../services/userServices";
+import { AuthContext } from "../store/context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const loginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),
@@ -15,6 +18,8 @@ const loginSchema = Yup.object().shape({
 });
 
 const Login = () => {
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -24,8 +29,18 @@ const Login = () => {
     mode: "onBlur",
   });
 
-  const onSubmit = (data) => {
-    console.log("Signup Data:", errors);
+  const onSubmit = async (data) => {
+    try {
+      console.log("Login Data:", data);
+      const res = await loginUser(data.email, data.password);
+
+      if (res.success) {
+        login(res.user);
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+    }
   };
   useEffect(() => {
     console.log(errors);

@@ -28,3 +28,36 @@ export const addUser = async (user) => {
     return { success: false, error: err };
   }
 };
+
+
+
+
+export const loginUser = async (email, password) => {
+  try {
+    // Query users collection for the email
+    const q = query(collection(db, "users"), where("email", "==", email));
+    const snapshot = await getDocs(q);
+
+    if (snapshot.empty) {
+      toast.error("User not found");
+      return { success: false, message: "User not found" };
+    }
+
+    // Get the user data (Firestore can have multiple, take first)
+    const userDoc = snapshot.docs[0];
+    const userData = userDoc.data();
+
+    // Check password
+    if (userData.password !== password) {
+      toast.error("Incorrect password");
+      return { success: false, message: "Incorrect password" };
+    }
+
+    toast.success("Login successful");
+    return { success: true, user: userData };
+  } catch (err) {
+    console.error("Error logging in:", err);
+    toast.error("Login failed");
+    return { success: false, error: err };
+  }
+};
